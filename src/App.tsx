@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import instructionsImage from './instructions.png';
 
 const GRID_SIZE = 6;
-const NUMBER_RANGE = 5;
 
 type Cell = {
   value: number;
@@ -10,12 +9,12 @@ type Cell = {
   isHighlighted: boolean;
 };
 
-const generateGrid = (): Cell[][] => {
+const generateGrid = (numberRange: number): Cell[][] => {
   return Array.from({ length: GRID_SIZE }, () =>
     Array.from({ length: GRID_SIZE }, () => {
       let value;
       do {
-        value = Math.ceil(Math.random() * NUMBER_RANGE);
+        value = Math.ceil(Math.random() * numberRange);
       } while (value === 0);
 
       return {
@@ -28,7 +27,8 @@ const generateGrid = (): Cell[][] => {
 };
 
 const App: React.FC = () => {
-  const [grid, setGrid] = useState<Cell[][]>(generateGrid());
+  const [level, setLevel] = useState<number>(1);
+  const [grid, setGrid] = useState<Cell[][]>(generateGrid(level));
   const [start, setStart] = useState<[number, number] | null>(null);
   const [, setEnd] = useState<[number, number] | null>(null);
   const [score, setScore] = useState<number>(0);
@@ -44,6 +44,10 @@ const App: React.FC = () => {
       setIsButtonEnabled(true);
     }
   }, [timer]);
+
+  const handleLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setLevel(parseInt(event.target.value, 10));
+  };
 
   const handleCellClick = (row: number, col: number) => {
     if (start && start[0] === row && start[1] === col) {
@@ -147,7 +151,7 @@ const App: React.FC = () => {
   };  
 
   const resetGrid = () => {
-    setGrid(generateGrid());
+    setGrid(generateGrid(level));
     setStart(null);
     setEnd(null);
     setScore(0);
@@ -267,7 +271,36 @@ const App: React.FC = () => {
   return (
     <div style={{ padding: "20px", display: "flex", flexDirection: "column", alignItems: "center" }}>
       <h1>La Grille</h1>
-      <h2>Points: {score}</h2>
+
+      <div style={{ marginTop: "20px", display: "flex", gap: "10px", alignItems: "center" }}>
+        <label style={{ fontSize: "16px", fontWeight: "bold", color: "#333" }}>
+        <h2>Points: {score} | Niveau
+          <select
+            value={level}
+            onChange={handleLevelChange}
+            style={{
+              marginLeft: "10px",
+              marginBottom: "10px",
+              padding: "5px 10px",
+              fontSize: "14px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              backgroundColor: "#f9f9f9",
+              color: "#333",
+              outline: "none",
+              cursor: "pointer",
+              gap: "5px",
+              justifyContent: "center",
+            }}
+          >
+            <option value={3}>1</option>
+            <option value={6}>2</option>
+            <option value={12}>3</option>
+            <option value={24}>4</option>
+            <option value={48}>5</option>
+          </select></h2>
+        </label>
+      </div>
       
       <div
         style={{
