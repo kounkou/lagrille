@@ -27,7 +27,7 @@ const generateGrid = (numberRange: number): Cell[][] => {
 };
 
 const App: React.FC = () => {
-  const [level, setLevel] = useState<number>(1);
+  const [level, setLevel] = useState<number>(3);
   const [grid, setGrid] = useState<Cell[][]>(generateGrid(level));
   const [start, setStart] = useState<[number, number] | null>(null);
   const [, setEnd] = useState<[number, number] | null>(null);
